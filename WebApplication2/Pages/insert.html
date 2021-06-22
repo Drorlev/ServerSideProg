@@ -114,6 +114,7 @@
             ajaxCall("GET", apiCall, "", getSeasonSuccessCB, getSeasonErrorCB)
         }
 
+        //Render the season on screen
         function getSeasonSuccessCB(season) {
             console.log(season);
             console.log(season.season_number);
@@ -137,7 +138,7 @@
             ajaxCall("GET", apiCall, "", getEpisodeSuccessCB, getEpisodeErrorCB)
         }
 
-        
+        //Render the episdoe 
         function getEpisodeSuccessCB(episodes) {
             console.log(episodes)
             let poster = imagePath + episodes.still_path;
@@ -157,6 +158,9 @@
                 let apiCall = "https://api.themoviedb.org/3/tv/" + tvId + "/season/" + seasonN + "/episode/" + episode + "?" + api_key + "&language=en-US";
                ajaxCall("GET", apiCall, "", getOneEpisodeSuccessCB, getOneEpisodeErrorCB)
             });
+            //disable the button util end of render
+            $(".button").attr("disabled", true);
+            //
             episodeNum++;
             getEpisode();
             
@@ -194,6 +198,7 @@
             console.log(err)
             episodeNum = 1;
             str = "";
+            $(".button").attr("disabled", false);
         }
 
 
