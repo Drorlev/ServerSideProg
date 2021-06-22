@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+
+       #signIn{
+           width:30%;
+           height:200px;
+           padding:0px;
+           margin-left:auto;
+           margin-right:auto;
+           margin-top:10%;
+           border:2px solid black;
+           text-align:center;
+           padding-top:20px;
+       }
+        #continue {
+            margin-top: 10%;
+        }
+       
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#continue").click(check);
+            $("#index").click(function () {
+                window.location = "insert.html"
+            });
+        });
+
+        function check() {
+               
+            let email = $("#email").val();
+            let password = $("#password").val();
+            let api = "../api/Users?email=" + email + "&password=" + password;
+            $("#email").prop("disabled", true);
+            $("#password").prop("disabled", true);
+            $("#continue").prop("disabled", true);
+            $("#index").prop("disabled", true);
+
+            ajaxCall("GET", api, "", SuccessCB, ErrorCB)
+        }
+
+        function SuccessCB(user) {
+            console.log(user);
+            let usr = user;
+            let nowUser = new User(usr.Name, usr.LastName, usr.Mail, usr.PhoneNum, usr.Gender, usr.BirthY, usr.Genre, usr.Address, usr.Id)
+            localStorage.setItem("user", JSON.stringify(nowUser));
+            window.location = "insert.html"
+        }
+
+        function ErrorCB(err) {
+            console.log(err)
+            if (err.status == "404") {
+                alert("Email or password are wrong");
+            }
+            else {
+                alert(err.status);
+            }
+            $("#email").prop("disabled", false);
+            $("#password").prop("disabled", false);
+            $("#continue").prop("disabled", false);
+            $("#index").prop("disabled", false);
+
+           //reset text input
+            $("#email").val("");
+            $("#password").val("");
+            
+        }
+
+        function User(name, lastName, mail, phoneNum, gender, birthY,genre,address,id) {
+            this.Name = name;
+            this.LastName = lastName;
+            this.Mail = mail;
+            this.PhoneNum = phoneNum;
+            this.Gender = gender;
+            this.BirthY = birthY;
+            this.Genre = genre;
+            this.Address = address;
+            this.Id = id
+        }
+       
+
+
+        
+    </script>
+</head>
+<body>
+    <button id="index">insert Page</button>
+    <div id="signIn">
+
+        Email: <br />
+        <input type="text" id="email" /><br />
+        Password:<br />
+        <input type="password" id="password" /><br />
+        <button id="continue">Continue</button>
+    </div>
+</body>
+</html>

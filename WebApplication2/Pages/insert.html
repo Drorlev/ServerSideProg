@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <style type="text/css">
+
+        #ph > img {
+            height:300px;
+        }
+        .img{
+            width:200px;
+        }
+        .episode{
+            border: 2px solid black;
+          
+        }
+        .season {
+            border: 2px solid black;
+            text-align: center;
+        }
+        .imgS{
+            margin-left:auto;
+            margin-right:auto;
+        }
+        #container{
+            width:100%;
+        }
+        .header{
+            width:50%;
+            float:left;
+        }
+        .logIn{
+            margin:0px;
+            margin-right:30%;
+            padding:0px;
+            text-align:right;
+        }
+
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script>
+
+        // https://api.themoviedb.org/3/search/tv?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US&page=1&include_adult=false&query=Grey%27s%20Anatomy
+
+        $(document).ready(function () {
+            $(".logIn").html("Hello Visitor please register or signIn");
+            if (localStorage.user) {
+                usr = JSON.parse(localStorage.getItem('user'));
+                $(".logIn").html("Hello " + usr.Name);
+            }
+            
+            seasonNum = 1;
+            temp = 1;
+            str = "";
+            $("#getTV").click(getTV);
+            $("#view").click(function () {
+                window.location = "view.html"
+            });
+            $("#registration").click(function () {
+                window.location = "registration.html"
+            });
+            signIn
+            $("#signIn").click(function () {
+                window.location = "signIn.html"
+            });
+            // replaced
+            key = "f397bb3834d5381108a03e7882b9d649";
+
+            url = "https://api.themoviedb.org/";
+            imagePath = "https://image.tmdb.org/t/p/w500/";
+            // 64467
+            // 1416
+
+            //https://api.themoviedb.org/3/tv/1416/season/0/episode/64467?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US
+
+        });
+        function view() {
+
+        }
+        function getTV() {
+            
+            let name = $("#tvShowName").val();
+            let method = "3/search/tv?";
+            let api_key = "api_key=" + key;
+            let moreParams = "&language=en-US&page=1&include_adult=false&";
+            let query = "query=" + encodeURIComponent(name);
+            let apiCall = url + method + api_key + moreParams + query;
+            ajaxCall("GET", apiCall, "", getTVSuccessCB, getTVErrorCB);
+        }
+
+        function getTVSuccessCB(tv) {
+            console.log(tv);
+            tvShow = tv.results[0];
+            tvId = tv.results[0].id;
+            let poster = imagePath + tv.results[0].poster_path;
+            if (str == "") {
+                str = "<img src='" + poster + "'/>";
+                $("#ph").html(str);
+            }
+
+            let method = "3/tv/";
+            let api_key = "api_key=" + key;
+            let apiCall = url + method + tvId + "/season/" + seasonNum + "?" + api_key
+
+            ajaxCall("GET", apiCall, "", getSeasonSuccessCB, getSeasonErrorCB)
+        }
+
+        function getSeasonSuccessCB(season) {
+            console.log(season);
+            console.log(season.season_number);
+            seasonNum++;
+            let poster = imagePath + season.poster_path;
+            str += "<div class='season'><h3>" + (season.season_number) +"</h3><img class ='img imgS' src='" + poster + "'/></div>"; 
+
+            $("#ph").html(str);
+            $(".season").click(function () {
+                episodeNum = 1;
+                str = "";
+                seasonN = $(this).text();
+                getEpisode()
+            });
+            getTV();
+        }
+
+        function getEpisode() {
+            let api_key = "api_key=" + key;
+            let apiCall = "https://api.themoviedb.org/3/tv/" + tvId + "/season/" + seasonN + "/episode/" + episodeNum + "?" + api_key + "&language=en-US";
+            ajaxCall("GET", apiCall, "", getEpisodeSuccessCB, getEpisodeErrorCB)
+        }
+
+        
+        function getEpisodeSuccessCB(episodes) {
+            console.log(episodes)
+            let poster = imagePath + episodes.still_path;
+            str +="<div class='episode'>"
+            str += "<h5>" + episodes.name + "</h5>";
+            str += "<p>" + episodes.overview + "</p>";
+            str += "<img class ='img' src='" + poster + "'/> "
+            str += "<p>Air date: " + episodes.air_date + "</p>";
+            str += '<input type="button" id="' + episodeNum + '" class="button" value="Add">'
+            str += "</div>"; 
+            $("#ph").html(str);
+
+            //Add the episode to to list
+            $(".button").click(function () {
+                let episode= $(this).attr("id");
+                let api_key = "api_key=" + key;
+                let apiCall = "https://api.themoviedb.org/3/tv/" + tvId + "/season/" + seasonN + "/episode/" + episode + "?" + api_key + "&language=en-US";
+               ajaxCall("GET", apiCall, "", getOneEpisodeSuccessCB, getOneEpisodeErrorCB)
+            });
+            episodeNum++;
+            getEpisode();
+            
+        }
+        function getOneEpisodeSuccessCB(_episodes) {
+            episodes = _episodes;
+             addTvShow();
+        }
+        function postEpisodeSuccessCB(numInserted) {
+            console.log("Inserted episodes: " + numInserted);
+            if (localStorage.user) {
+                let api = "../api/Episodes?id=" + JSON.parse(localStorage.getItem('user')).Id;
+                ajaxCall("POST", api, JSON.stringify(episode), favoriteSuccessCB, favoriteErrorCB)
+            }
+            console.log(episode)
+        }
+        function favoriteSuccessCB(num) {
+            console.log("fav succ");
+            alert("Done");
+        }
+        function favoriteErrorCB(err) {
+            console.log("fav err");
+        }
+
+        function postEpisodeErrorCB(numInserted) {
+            console.log("Does not Inserted episode");
+            
+        }
+
+        function getOneEpisodeErrorCB(err) {
+            console.log(err)
+        }
+        function getEpisodeErrorCB(err) {
+            console.log("episode error")
+            console.log(err)
+            episodeNum = 1;
+            str = "";
+        }
+
+
+        function getSeasonErrorCB(err) {
+            console.log(err);
+            seasonNum = 1;
+            str = "";
+        }
+
+
+        function getTVErrorCB(err) {
+            console.log(err);
+        }
+
+        function addTvShow() {
+            let api = "../api/Series"
+            showName = tvShow.name;
+            let show = {
+                Id: tvShow.id,
+                Name: tvShow.name,
+                AirDate: tvShow.first_air_date,
+                OriginCountry: tvShow.origin_country[0],
+                OriginalLanguage: tvShow.original_language, 
+                Overview: tvShow.overview,
+                Popularity: tvShow.popularity, 
+                PosterPath: (imagePath + tvShow.poster_path), 
+            }
+            console.log(show);
+            alert(show.Name);
+            ajaxCall("POST", api, JSON.stringify(show), postShowSuccessCB, postShowErrorCB)
+        }
+
+        function postShowSuccessCB(numInserted) {
+            console.log("Inserted series" + numInserted);
+            let seasonnum = episodes.season_number;
+            let episdoename = episodes.name
+            let episdoeid = episodes.id
+            let overview = episodes.overview
+            let poster = imagePath + episodes.still_path;
+            let airdate = episodes.air_date
+            let api = "../api/Episodes";
+             episode = {
+                TvShowId: tvId,
+                SeasonNum: seasonnum,
+                EpisodeName: episdoename,
+                EpisodeId: episdoeid,
+                Poster: poster,
+                Overview: overview,
+                 AirDate: airdate,
+                TvShowname :showName,
+            }
+            console.log(episode)
+            ajaxCall("POST", api, JSON.stringify(episode), postEpisodeSuccessCB, postEpisodeErrorCB)
+        }
+        function postShowErrorCB() {
+            console.log("Does not Inserted");
+        }
+
+    </script>
+
+</head>
+<body>
+    <div id="container">
+
+        <div class="header">
+                <input type="text" id="tvShowName" />
+                <button id="getTV">Get TV Show</button>
+                <button id="view">View Page</button>
+                <button id="registration">Register</button>
+                <button id="signIn">Sign In</button>
+        </div>
+        <div class="header">
+            <p class="logIn"></p>
+        </div>
+    </div>
+    <div id="ph">
+
+
+    </div>
+
+
+</body>
+</html>

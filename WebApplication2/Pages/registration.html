@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            api = "../api/Users";
+         
+            $("#registerForm").submit(myfunction);
+            $("#passwordTB").blur(checkCode);
+            $("#ByearTB").blur(checkYear);
+        });
+
+        function checkCode() {
+            var result = "";
+            var result2 = "";
+            var str = $("#passwordTB").val();
+            var patt1 = /([0-9])/g;
+            var patt2 = /([A-Z])/g;
+            result = str.match(patt1);
+            result2 = str.match(patt2);
+            if (result && result2 && str.length >= 6) {
+
+                this.validity.valid = true;
+                this.setCustomValidity('');
+                return;
+            }
+
+            this.validity.valid = false; // must set it to false to prevent the submit to the server
+            this.setCustomValidity('Code is not valid, please enter a valid code with at least one upperletter and at least one digit');
+
+        }
+
+        function checkYear() {
+            var input = $("#ByearTB").val();
+            var date = new Date();
+            var thisYear = date.getFullYear();
+            if (input >= 1900 && input <= thisYear) {
+                this.validity.valid = true;
+                this.setCustomValidity('');
+                return;
+            }
+            this.validity.valid = false; // must set it to false to prevent the submit to the server
+            this.setCustomValidity('Code is not valid, please enter a year between 1900 - ' + thisYear);
+            
+        }
+
+        function myfunction() {
+
+            let name = $("#nameTB").val();
+            let lname = $("#LnameTB").val();
+            let mail = $("#mailTB").val();
+            let password = $("#passwordTB").val();
+            let phone = $("#phoneTB").val();
+            let gender = $("#GenderTB").val();
+            let Byear = $("#ByearTB").val();
+            let genre = $("#genreTB").val();
+            let address = $("#addressTB").val();
+
+            let user = {
+                Name: name,
+                LastName: lname,
+                Mail: mail,
+                Password: password,
+                PhoneNum: phone,
+                Gender: gender,
+                BirthY: Byear,
+                Genre: genre,
+                Address: address,
+                Id:0,
+            }
+            console.log(user);
+           
+            ajaxCall("POST", api, JSON.stringify(user), SuccessCB, ErrorCB)
+            alert("Submitted to the server!", "Great Job", "success");
+            disablePage();
+           
+            
+            return false;
+            
+
+        }
+
+            function disablePage() {
+                $("#nameTB").prop("disabled", true);
+                $("#LnameTB").prop("disabled", true);
+                $("#mailTB").prop("disabled", true);
+                $("#passwordTB").prop("disabled", true);
+                $("#phoneTB").prop("disabled", true);
+                $("#GenderTB").prop("disabled", true);
+                $("#ByearTB").prop("disabled", true);
+                $("#genreTB").prop("disabled", true);
+                $("#addressTB").prop("disabled", true);
+                $("#sub").prop("disabled", true);
+            }
+
+
+        function SuccessCB(numInserted) {
+       
+            alert("Added Successfuly!");
+            window.location = "insert.html"
+        
+        }
+        function ErrorCB() {
+            console.log("Error")
+            alert("Error!");
+            window.location = "registration.html"
+        }
+
+
+
+
+    </script>
+</head>
+<body>
+    <div id="ph"></div>
+    <form action="" id="registerForm">
+        Name: <input type="text" id="nameTB" placeholder="enter your name" required /> <br />
+        Last name: <input type="text" id="LnameTB" placeholder="enter your last name" required /> <br />
+        mail: <input type="email" id="mailTB" placeholder="enter your mail" required /> <br />
+        password: <input type="password" id="passwordTB" placeholder="enter your password" required /> <br />
+        Phone: <input type="text" id="phoneTB" placeholder="0dd-ddd-dddd"  
+               pattern="[0][0-9]{2}-[0-9]{3}-[0-9]{4}"
+               oninvalid="this.setCustomValidity('Format should be 0dd-ddd-dddd')"
+               oninput="this.setCustomValidity('')" required/><br />
+        Gender: <input type="text" id="GenderTB" placeholder="enter your gender" 
+                       pattern="([M][a][l][e])|([F][e][m][a][l][e])|([O][t][h][e][r])"
+               oninvalid="this.setCustomValidity('Format should be Male or Female or Other')"
+               oninput="this.setCustomValidity('')" required/><br />
+        Birth year: <input type="text" id="ByearTB" placeholder="enter your birth year" required/><br />
+        Favorite genre: <input type="text" id="genreTB" /> <br />
+        Address: <input type="text" id="addressTB" placeholder="enter your address" required /> <br />
+        <input type="submit" id="sub"/>
+    </form>
+</body>
+</html>

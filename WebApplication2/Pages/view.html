@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+
+        #ph > img {
+            height: 300px;
+        }
+
+        .img {
+            width: 200px;
+        }
+
+        .episode {
+            border: 2px solid black;
+        }
+
+        .season {
+            border: 2px solid black;
+            text-align: center;
+        }
+
+        .imgS {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#index").click(function () {
+                window.location = "insert.html"
+            });
+            if (localStorage.user == null)
+                return;
+            let api = "../api/Episodes?id="+ JSON.parse(localStorage.getItem('user')).Id;
+            ajaxCall("GET", api, "", getEpisodeSuccessCB, getEpisodeErrorCB)
+            $("#index").click(function () {
+                window.location = "insert.html"
+            });
+            $("#episodesList").change(getTVshowEpisodes);
+        });
+
+        function getTVshowEpisodes() {
+            let tvShowFilter = $("#episodesList").val();
+            let api = "../api/Episodes?tvShowName=" + tvShowFilter + "&id=" + JSON.parse(localStorage.getItem('user')).Id;
+            ajaxCall("GET", api, "", getTvShowSuccessCB, getTvShowErrorCB)
+        }
+
+
+        //Make the dropDown
+        function getEpisodeSuccessCB(episodes) {
+            let episodesArr = [];
+            let str = "<option>select a TV show</option>";
+            for (var k in episodes) {
+                if (episodesArr[episodes[k].TvShowname] == null) {
+                    str += ' <option>' + episodes[k].TvShowname + '</option>';
+                    episodesArr[episodes[k].TvShowname] = episodes[k].Episodename;
+                }
+            }
+            document.getElementById("episodesList").innerHTML = str;
+
+        }
+         //Render the tv show episodes
+        function getTvShowSuccessCB(episodes) {
+            console.log(episodes);
+            let str = "";
+            for (var k in episodes) {
+                str += "<div class='episode'>"
+                str += "<h5>" + episodes[k].EpisodeName + "</h5>";
+                str += "<p>" + episodes[k].Overview + "</p>";
+                str += "<img class ='img' src='" + episodes[k].Poster + "'/> "
+                str += "<p>Air date: " + episodes[k].AirDate + "</p>";
+                str += "</div>";
+                $("#ph").html(str);
+            }
+        }
+        
+        function getTvShowErrorCB(err) {
+            console.log(err)
+        }
+
+        function getEpisodeErrorCB(err) {
+            console.log(err)
+        }
+    </script>
+</head>
+<body>
+
+    <select id="episodesList">
+        <option value="-1">select a TV show</option>
+    </select>
+    <button id="index">insert Page</button>
+    <div id="ph">
+
+
+    </div>
+</body>
+</html>
