@@ -5,9 +5,83 @@
     <title></title>
 
     <style type="text/css">
-
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            height: 100%;
+            width: 100%;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        .data{
+            float:left;
+            width:50%;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        .tab input {
+                float: left;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 14px;
+                height:5px;
+                margin-top:5px;
+        }
+        .tab p {
+            background-color: inherit;
+            float: right;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+    
         #ph > img {
             height:300px;
+        }
+        #TVph{
+            height:33.3%;
+            width:100%;
+            background-color:lavenderblush;
+            
+        }
+        #PosterPh {
+            height: 100%;
+            width: 25%;
+            float:left;
+        }
+        #dataPh {
+            height: 100%;
+            width: 75%;
+            float: left;
+        }
+        #PosterPh > img {
+            height: 100%;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
         }
         .img{
             width:200px;
@@ -32,9 +106,7 @@
             float:left;
         }
         .logIn{
-            margin:0px;
-            margin-right:30%;
-            padding:0px;
+            margin-right:10%;
             text-align:right;
         }
 
@@ -53,7 +125,7 @@
 
         $(document).ready(function () {
             $(".logIn").html("Hello Visitor please register or signIn");
-            if (localStorage.user) {
+            if (localStorage.user.Name != null) {
                 usr = JSON.parse(localStorage.getItem('user'));
                 $(".logIn").html("Hello " + usr.Name);
             }
@@ -61,6 +133,8 @@
             seasonNum = 1;
             temp = 1;
             str = "";
+            strTv = "";
+            strData = "";
             $("#getTV").click(getTV);
             $("#view").click(function () {
                 window.location = "view.html"
@@ -101,19 +175,31 @@
             console.log(tv);
             tvShow = tv.results[0];
             tvId = tv.results[0].id;
+            //add some staff to antoher div
+            if (strData == "") {
+                strData += "<div class='data'>" + tvShow.vote_average*10 + "%</div>"
+                
+                $("#dataPh").html(strData);
+            }
             let poster = imagePath + tv.results[0].poster_path;
-            if (str == "") {
-                str = "<img src='" + poster + "'/>";
-                $("#ph").html(str);
+            if (strTv == "") {
+                strTv = "<img src='" + poster + "'/>";
+                $("#PosterPh").html(strTv);
             }
 
             let method = "3/tv/";
             let api_key = "api_key=" + key;
             let apiCall = url + method + tvId + "/season/" + seasonNum + "?" + api_key
-
+            //let apiCallRev = "https://api.themoviedb.org/3/tv/" + tvId + "?" + api_key +"&language=en-US";
             ajaxCall("GET", apiCall, "", getSeasonSuccessCB, getSeasonErrorCB)
+            //ajaxCall("GET", apiCallRev, "", getsuc, getERR)
         }
-
+        function getsuc(tv) {
+            alert("yay");
+            console.log(tv);
+        }
+        function getERR(err) {
+            alert("error");}
         //Render the season on screen
         function getSeasonSuccessCB(season) {
             console.log(season);
@@ -198,6 +284,7 @@
             console.log(err)
             episodeNum = 1;
             str = "";
+            strTv = "";
             $(".button").attr("disabled", false);
         }
 
@@ -263,16 +350,19 @@
 <body>
     <div id="container">
 
-        <div class="header">
-                <input type="text" id="tvShowName" />
-                <button id="getTV">Get TV Show</button>
-                <button id="view">View Page</button>
-                <button id="registration">Register</button>
-                <button id="signIn">Sign In</button>
-        </div>
-        <div class="header">
+        <div class="tab">
+            <input type="text" id="tvShowName" />
+            <button id="getTV">Get TV Show</button>
+            <button id="view">View Page</button>
+            <button id="registration">Register</button>
+            <button id="signIn">Sign In</button>
             <p class="logIn"></p>
         </div>
+    </div>
+    <div id="TVph">
+        <div id="PosterPh"></div>
+        <div id="dataPh"></div>
+
     </div>
     <div id="ph">
 

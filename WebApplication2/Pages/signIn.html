@@ -5,6 +5,20 @@
     <title></title>
     <style type="text/css">
 
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+        }
        #signIn{
            width:30%;
            height:200px;
@@ -18,6 +32,24 @@
        }
         #continue {
             margin-top: 10%;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        #container {
+            width: 100%;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
         }
        
 
@@ -51,9 +83,13 @@
         function SuccessCB(user) {
             console.log(user);
             let usr = user;
-            let nowUser = new User(usr.Name, usr.LastName, usr.Mail, usr.PhoneNum, usr.Gender, usr.BirthY, usr.Genre, usr.Address, usr.Id)
+            let nowUser = new User(usr.Name, usr.LastName, usr.Mail, usr.PhoneNum, usr.Gender, usr.BirthY, usr.Genre, usr.Address, usr.Id)//add user.admin
             localStorage.setItem("user", JSON.stringify(nowUser));
-            window.location = "insert.html"
+           // if (user.admin != true) {
+                window.location = "insert.html"
+            //}
+            //showTables();//add function that show everything
+            //add tab to return to home
         }
 
         function ErrorCB(err) {
@@ -93,7 +129,12 @@
     </script>
 </head>
 <body>
-    <button id="index">insert Page</button>
+    <div id="container">
+        <div class="tab">
+            <button id="index">insert Page</button>
+        </div>
+    </div>
+    
     <div id="signIn">
 
         Email: <br />
