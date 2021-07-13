@@ -8,7 +8,7 @@
         * {
             margin: 0px;
             padding: 0px;
-            
+            background-color: dimgrey;
         }
         html {
             height: 100%;
@@ -127,6 +127,30 @@
             width: 100%;
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         }
+        div.scrollmenu {
+            
+            overflow: auto;
+            white-space: nowrap;
+        }
+        .cards_container {
+            height: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+            background-color: blue;
+            margin-top: 5%
+        }
+        .card {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px;
+            text-decoration: none;
+        }
+        .name {
+            float:left;
+            width:100%
+        }
 
     </style>
 
@@ -231,9 +255,10 @@
                 for (var player in castArr) {
                     //make div for players 
                     castArr[player].id
-                    strPlayers += "<p class='" + i + "'>Character: " + castArr[player].character + " Name: " + castArr[player].name + "</p>"
+                        
+                    strPlayers += "<div class='card'><p class='name " + i + "'>Character: " + castArr[player].character + "</p><p class='name " + i +"'> Name: " + castArr[player].name + "</p></div>"
                 }
-                $(".cast").html(strPlayers);
+                $(".cards_container").html(strPlayers);
                 castFlag = true;
             }
         }
@@ -244,7 +269,9 @@
             console.log(tv);
         }
         function getERR(err) {
-            alert("error");}
+            alert("error");
+        }
+
         //Render the season on screen
         function getSeasonSuccessCB(season) {
             console.log(season);
@@ -258,11 +285,14 @@
                 episodeNum = 1;
                 str = "";
                 seasonN = $(this).text();
+
+                //to render the epsidoes one it would happan recuresivly 
                 getEpisode()
             });
             getTV();
         }
 
+        // a function that make the ajaxCall for the episode data
         function getEpisode() {
             let api_key = "api_key=" + key;
             let apiCall = "https://api.themoviedb.org/3/tv/" + tvId + "/season/" + seasonN + "/episode/" + episodeNum + "?" + api_key + "&language=en-US";
@@ -289,13 +319,15 @@
                 let apiCall = "https://api.themoviedb.org/3/tv/" + tvId + "/season/" + seasonN + "/episode/" + episode + "?" + api_key + "&language=en-US";
                ajaxCall("GET", apiCall, "", getOneEpisodeSuccessCB, getOneEpisodeErrorCB)
             });
-            //disable the button util end of render
+            //disable the button util end of render process / until error / last epidsoe renders
             $(".button").attr("disabled", true);
             //
             episodeNum++;
             getEpisode();
             
         }
+
+        //Add the episode to to list Call back will add the show to Series table
         function getOneEpisodeSuccessCB(_episodes) {
             episodes = _episodes;
              addTvShow();
@@ -397,6 +429,7 @@
 
 </head>
 <body>
+    <!--tabs-->
     <div id="container">
 
         <div class="tab">
@@ -408,6 +441,8 @@
             <p class="logIn"></p>
         </div>
     </div>
+
+    <!--Series data-->
     <div id="TVph">
         <div id="PosterPh"></div>
         <div id="dataPh">
@@ -416,7 +451,13 @@
             <div class="origin"></div>
         </div>
     </div>
-    <div class="cast"></div>
+    <div class="cast">
+        <div class="cards_container scrollmenu">
+            <!--wil apper dynamicly-->
+            <!--<div class="person"></div> 
+            <div class="name_Roll"></div>-->
+        </div>
+    </div>
     <div id="ph">
 
 
