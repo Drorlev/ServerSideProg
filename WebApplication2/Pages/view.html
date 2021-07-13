@@ -4,7 +4,14 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-
+        *{
+            margin:0px;
+            padding:0px;
+        }
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
         #ph > img {
             height: 300px;
         }
@@ -25,6 +32,25 @@
         .imgS {
             margin-left: auto;
             margin-right: auto;
+        }
+        #container {
+            width: 100%;
+        }
+
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        .tab button ,.tab select {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -93,11 +119,16 @@
     </script>
 </head>
 <body>
+    <div id="container">
+       
+        <div class="tab">
+            <select id="episodesList">
+                <option value="-1">select a TV show</option>
+            </select>
+            <button id="index">insert Page</button>
+        </div>
+    </div>
 
-    <select id="episodesList">
-        <option value="-1">select a TV show</option>
-    </select>
-    <button id="index">insert Page</button>
     <div id="ph">
 
 

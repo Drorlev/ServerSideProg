@@ -8,6 +8,7 @@
         * {
             margin: 0px;
             padding: 0px;
+            
         }
         html {
             height: 100%;
@@ -63,7 +64,8 @@
         #TVph{
             height:33.3%;
             width:100%;
-            background-color:lavenderblush;
+            background-color:dimgrey;
+            color:white;
             
         }
         #PosterPh {
@@ -71,10 +73,10 @@
             width: 25%;
             float:left;
         }
-        #dataPh {
-            height: 100%;
-            width: 75%;
+        #dataPh{
+            width:75%;
             float: left;
+            height: 100%;
         }
         #PosterPh > img {
             height: 100%;
@@ -82,6 +84,7 @@
             margin-left: auto;
             margin-right: auto;
             display: block;
+            border:1px solid black;
         }
         .img{
             width:200px;
@@ -109,6 +112,21 @@
             margin-right:10%;
             text-align:right;
         }
+        .cast{
+            width:100%;
+            height:33%;
+            background-color:green;
+        }
+        .overwiew {
+            height: 80%;
+            width: 100%;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        .rating , .origin {
+            height: 10%;
+            width: 100%;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
 
     </style>
 
@@ -124,17 +142,18 @@
         // https://api.themoviedb.org/3/search/tv?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US&page=1&include_adult=false&query=Grey%27s%20Anatomy
 
         $(document).ready(function () {
-            $(".logIn").html("Hello Visitor please register or signIn");
-            if (localStorage.user.Name != null) {
-                usr = JSON.parse(localStorage.getItem('user'));
-                $(".logIn").html("Hello " + usr.Name);
-            }
+            //$(".logIn").html("Hello Visitor please register or signIn");
+            //if (localStorage.user.Name != null) {
+            //    usr = JSON.parse(localStorage.getItem('user'));
+            //    $(".logIn").html("Hello " + usr.Name);
+            //}
             
             seasonNum = 1;
             temp = 1;
             str = "";
             strTv = "";
             strData = "";
+            castFlag = false;
             $("#getTV").click(getTV);
             $("#view").click(function () {
                 window.location = "view.html"
@@ -175,11 +194,14 @@
             console.log(tv);
             tvShow = tv.results[0];
             tvId = tv.results[0].id;
-            //add some staff to antoher div
             if (strData == "") {
-                strData += "<div class='data'>" + tvShow.vote_average*10 + "%</div>"
-                
-                $("#dataPh").html(strData);
+                strData = "User Score: " + tvShow.vote_average * 10+"%";
+                $(".rating").html(strData);
+                strData ="Overview: "+ tvShow.overview
+                $(".overwiew").html(strData);
+                strData = "Origin Country: " + tvShow.origin_country[0]
+                $(".origin").html(strData);
+
             }
             let poster = imagePath + tv.results[0].poster_path;
             if (strTv == "") {
@@ -191,8 +213,31 @@
             let api_key = "api_key=" + key;
             let apiCall = url + method + tvId + "/season/" + seasonNum + "?" + api_key
             //let apiCallRev = "https://api.themoviedb.org/3/tv/" + tvId + "?" + api_key +"&language=en-US";
+
+            
             ajaxCall("GET", apiCall, "", getSeasonSuccessCB, getSeasonErrorCB)
+            //create api for cast render
+            let api = "https://api.themoviedb.org/3/tv/" + tvId+ "/credits?" + api_key + "&language=en-US";
+            ajaxCall("GET", api, "", getCastSuccessCB, getCastErrorCB)
             //ajaxCall("GET", apiCallRev, "", getsuc, getERR)
+        }
+        function getCastSuccessCB(casts) {
+           // alert("cast");
+            console.log(casts)
+            let castArr = casts.cast;
+            let strPlayers = "";
+            let i = 0;
+            if (castFlag != true) {
+                for (var player in castArr) {
+                    //make div for players 
+                    castArr[player].id
+                    strPlayers += "<p class='" + i + "'>Character: " + castArr[player].character + " Name: " + castArr[player].name + "</p>"
+                }
+                $(".cast").html(strPlayers);
+                castFlag = true;
+            }
+        }
+        function getCastErrorCB() {
         }
         function getsuc(tv) {
             alert("yay");
@@ -285,6 +330,7 @@
             episodeNum = 1;
             str = "";
             strTv = "";
+            
             $(".button").attr("disabled", false);
         }
 
@@ -293,6 +339,9 @@
             console.log(err);
             seasonNum = 1;
             str = "";
+            strData = "";
+            strTv = "";
+            castFlag = false;
         }
 
 
@@ -361,14 +410,18 @@
     </div>
     <div id="TVph">
         <div id="PosterPh"></div>
-        <div id="dataPh"></div>
-
+        <div id="dataPh">
+            <div class="rating"></div>
+            <div class="overwiew"></div>
+            <div class="origin"></div>
+        </div>
     </div>
+    <div class="cast"></div>
     <div id="ph">
 
 
     </div>
-
+    
 
 </body>
 </html>
