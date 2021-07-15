@@ -166,7 +166,9 @@
             margin-left: auto;
             margin-right: auto;
         }
-
+        #actorH1{
+            color:dodgerblue;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -212,6 +214,8 @@
                 }
                 
             });
+
+            $("#getActor").click(getActor);
             // replaced
             key = "f397bb3834d5381108a03e7882b9d649";
 
@@ -239,6 +243,10 @@
             console.log(tv);
             tvShow = tv.results[0];
             tvId = tv.results[0].id;
+            //show the container is hidden
+            $(".cast").show();
+            $("#TVph").css("background-color", "dimgrey");
+            /////
             if (strData == "") {
                 strData = "User Score: " + tvShow.vote_average * 10+"%";
                 $(".rating").html(strData);
@@ -313,8 +321,8 @@
             
             
         }
-        function getActorImageErrorCB() {
-            
+        function getActorImageErrorCB(err) {
+            console.log(err)
         }
         //end of Actor Images
 
@@ -343,7 +351,7 @@
                 str = "";
                 seasonN = $(this).text();
 
-                //to render the epsidoes one it would happan recuresivly 
+                //to render the epsidoes one by one it would happan recuresivly 
                 getEpisode()
             });
             getTV();
@@ -482,6 +490,50 @@
             console.log("Does not Inserted");
         }
 
+        //--------------------------
+        //get actor
+        function getActor() {
+
+            alert("getActor");
+
+            //cleans the page
+            $("#TVph").css("background-color", "white");
+            $("#PosterPh").html(str);
+            $(".rating").html(str);
+            $(".overwiew").html(str);
+            $(".origin").html(str);
+            $(".cards_container").html(str);
+            $(".cast").hide();
+            $("#ph").html(str);
+
+            //generate H1
+            $(".overwiew").html("<h1 id='actorH1'>Click on the actor that you Want</h1>");
+            
+            let name = $("#tvShowName").val();
+            let method = "3/search/person?";
+            api_key = "api_key=" + key;
+            let moreParams = "&language=en-US&page=1&include_adult=false&";
+            let query = "query=" + encodeURIComponent(name);
+            let apiCall = url + method + api_key + moreParams + query;
+            
+
+     
+            ajaxCall("GET", apiCall, "", getActorsArrSuccessCB, getActorsArrErrorCB)
+        }
+
+        function getActorsArrSuccessCB(Actors) {
+            for (var i in Actors.results) {
+
+                let actor = Actors.results[i].id
+                alert(actor);
+                //ajaxCall to get people done before
+
+            }
+        }
+        function getActorsArrErrorCB(err) {
+            console.log(err);
+        }
+
     </script>
 
 </head>
@@ -492,6 +544,7 @@
         <div class="tab">
             <input type="text" id="tvShowName" />
             <button id="getTV">Get TV Show</button>
+            <button id="getActor">Get Actor</button>
             <button id="view">View Page</button>
             <button id="registration">Register</button>
             <button id="signIn">Sign In</button>
