@@ -181,11 +181,12 @@
         // https://api.themoviedb.org/3/search/tv?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US&page=1&include_adult=false&query=Grey%27s%20Anatomy
 
         $(document).ready(function () {
-            //$(".logIn").html("Hello Visitor please register or signIn");
-            //if (localStorage.user.Name != null) {
-            //    usr = JSON.parse(localStorage.getItem('user'));
-            //    $(".logIn").html("Hello " + usr.Name);
-            //}
+            $(".logIn").html("Hello Visitor please register or signIn");
+            if (localStorage.user != null) {
+                usr = JSON.parse(localStorage.getItem('user'));
+                $(".logIn").html("Hello " + usr.Name);
+                $("#signIn").text("Logout");
+            }
             $(".scrollmenu").hide();
             seasonNum = 1;
             temp = 1;
@@ -200,9 +201,16 @@
             $("#registration").click(function () {
                 window.location = "registration.html"
             });
-            signIn
+            
             $("#signIn").click(function () {
-                window.location = "signIn.html"
+                if ($(this).text() == "Logout") {
+                    localStorage.removeItem("user");
+                    window.location = "insert.html"
+                }
+                else {
+                    window.location = "signIn.html"
+                }
+                
             });
             // replaced
             key = "f397bb3834d5381108a03e7882b9d649";
