@@ -8,6 +8,7 @@
         * {
             margin: 0px;
             padding: 0px;
+            
            
         }
         html {
@@ -61,23 +62,21 @@
         #ph > img {
             height:300px;
         }
-        #TVph{
-            height:33.3%;
-            width:100%;
-            background-color:dimgrey;
-            color:white;
-            
+        #TVph, #actor {
+            height: 33.3%;
+            width: 100%;
+            background-color: dimgrey;
+            color: white;
         }
-        #PosterPh {
+        #PosterPh, #actorPhoto {
             height: 100%;
             width: 25%;
-            float:left;
+            float: left;
         }
-        #dataPh{
-            width:75%;
+        #dataPh, #actorData {
+            width: 75%;
             float: left;
             height: 100%;
-            
         }
         #PosterPh > img {
             height: 100%;
@@ -169,6 +168,9 @@
         #actorH1{
             color:dodgerblue;
         }
+       
+       
+        
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -497,7 +499,7 @@
             alert("getActor");
 
             //cleans the page
-            $("#TVph").css("background-color", "white");
+           // $("#TVph").css("background-color", "white");
             $("#PosterPh").html(str);
             $(".rating").html(str);
             $(".overwiew").html(str);
@@ -507,7 +509,7 @@
             $("#ph").html(str);
 
             //generate H1
-            $(".overwiew").html("<h1 id='actorH1'>Click on the actor that you Want</h1>");
+           
             
             let name = $("#tvShowName").val();
             let method = "3/search/person?";
@@ -522,17 +524,88 @@
         }
 
         function getActorsArrSuccessCB(Actors) {
-            for (var i in Actors.results) {
+         
+                let actorId = Actors.results[0].id;
+            
+            let apiCall = "https://api.themoviedb.org/3/person/" + actorId+"?api_key=" + key + "&language=en-US";
+            ajaxCall("GET", apiCall, "", getSelectActorSuccessCB, getSelectActorErrorCB)
+            //ajaxCall to get peopleImg done before
 
-                let actor = Actors.results[i].id
-                alert(actor);
-                //ajaxCall to get people done before
-
-            }
+           
+            
         }
         function getActorsArrErrorCB(err) {
             console.log(err);
+            
         }
+        //SelectActor
+        function getSelectActorSuccessCB(actor) {
+            strPeople = "";
+            
+            switch (actor.gender) {
+                case 1:
+                    aGender = "Female"
+                    break;
+                case 2:
+                    aGender = "Male"
+                    break;
+                default:
+                    aGender = "undefined";
+            }
+
+            strPeople += "<p>Name: " + actor.name + "</p>";
+            strPeople += "<p>Department: " + actor.known_for_department + "</p>";
+            if (actor.birthday!=null)
+            strPeople += "<p>Birthday: " + actor.birthday + "</p>";
+            if (aGender != "undefined")
+            strPeople += "<p>Gender: " + aGender + "</p>";
+            if (actor.place_of_birth != null)
+            strPeople += "<p>Birth Place: " + actor.place_of_birth + "</p>";
+            strPeople += "<button id='AddActor'>Add</button>";
+            $(".overwiew").html(strPeople);
+            strPeople = "";
+            SelectActor = actor;
+            $("#AddActor").click(addActor);
+        }
+        function getSelectActorErrorCB(err) { console.log(err) }
+
+        function addActor() {
+            alert("add");
+            actor = SelectActor;
+            // from image api actorPoster;
+           /* if (actorPoster == null) {*/
+                actorPoster = "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg";
+            /*}*/
+            let api = "../api/Actors"
+             UploadActor = {
+                Name: actor.name,
+                Known_for_department: actor.known_for_department,
+                Birthday: actor.birthday,
+                Gender: aGender,
+                 BirthPlace: actor.place_of_birth,
+                 Poster_path: actorPoster,
+                Id: actor.id
+            }
+            ajaxCall("POST", api, JSON.stringify(UploadActor), postActorSuccessCB, postActorErrorCB)
+        }
+
+        function postActorSuccessCB(inserted) {
+            alert("inserted " + inserted);
+            
+            if (localStorage.user) {
+                let api = "../api/Actors?id=" + JSON.parse(localStorage.getItem('user')).Id;
+                ajaxCall("POST", api, JSON.stringify(UploadActor), favoriteActorSuccessCB, favoriteActorErrorCB)
+            }
+        }
+        function postActorErrorCB(err) { console.log(err) }
+
+        function favoriteActorSuccessCB() {
+            alert("done");
+        }
+        function favoriteActorErrorCB() {
+            alert("faild");
+        }
+
 
     </script>
 
@@ -570,6 +643,6 @@
 
     </div>
     
-
+    
 </body>
 </html>

@@ -81,6 +81,7 @@ namespace Tar1.Models.DAL
 
         }
 
+        //insert the episode id and the user id to the favorite table
         public int Insert(Episode episode,int id)
         {
             System.Diagnostics.Debug.WriteLine("here");
@@ -128,7 +129,56 @@ namespace Tar1.Models.DAL
                 }
             }
         }
-      
+
+        //insert the actor id and the user id to the favoritve actors table
+        public int Insert(Actor actor, int id)
+        {
+            System.Diagnostics.Debug.WriteLine("here");
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            // helper method to build the insert string
+            String cStr = BuildInsertCommand(actor, id);
+            cmd = CreateCommand(cStr, con);
+
+
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (SqlException Ex)
+            {
+                if (Ex.Number == 2627)
+                {
+                    //Your Message
+                    return 0;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
         // Build the Insert command String Favorites
         private String BuildInsertCommand(Episode ep,int id)
         {
@@ -141,9 +191,21 @@ namespace Tar1.Models.DAL
 
             return command;
         }
+        // Build the Insert command String Favorites
+        private String BuildInsertCommand(Actor actr, int id)
+        {
+            String command = "";
+            StringBuilder sb = new StringBuilder();
+            // use a string builder to create the dynamic string
+            sb.AppendFormat("Values('{0}', '{1}')", actr.Id,id);
+            String prefix = "INSERT INTO FavoritesActors_2021 " + "([actor_id], [user_id])";
+            command = prefix + sb.ToString();
+
+            return command;
+        }
 
         // Build the Insert command String
-       
+
         private void BuildInsertCommand(SqlConnection con, SqlCommand cmd, Object obj)
         {
 
@@ -225,6 +287,23 @@ namespace Tar1.Models.DAL
                 cmd.Parameters.AddWithValue("@address", usr.Address);
                 cmd.Parameters.Add("@birth_Day", SqlDbType.Int);
                 cmd.Parameters["@birth_Day"].Value = usr.BirthY;
+            }
+            else if (obj is Actor)
+            {
+
+                Actor actr = (Actor)obj;
+                cmdText += "INSERT INTO Actors_2021 (name, known_for_department, birthday, gender, birth_place,poster_path, id) " +
+                "Values (@name, @known_for_department, @birthday, @gender, @birth_place,@poster_path, @id)";
+
+                cmd.CommandText = cmdText;
+                cmd.Parameters.AddWithValue("@name", actr.Name);
+                cmd.Parameters.AddWithValue("@known_for_department", actr.Known_for_department);
+                cmd.Parameters.AddWithValue("@birthday", actr.Birthday);
+                cmd.Parameters.AddWithValue("@gender", actr.Gender);
+                cmd.Parameters.AddWithValue("@birth_place", actr.BirthPlace);
+                cmd.Parameters.AddWithValue("@poster_path", actr.Poster_path);
+                cmd.Parameters.Add("@id", SqlDbType.Int);
+                cmd.Parameters["@id"].Value = actr.Id;
             }
         }
         
