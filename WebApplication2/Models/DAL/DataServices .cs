@@ -426,7 +426,7 @@ namespace Tar1.Models.DAL
             }
 
         }
-
+         //episdoes gets
         public List<Episode> Get(int id)
         {
             SqlConnection con = null;
@@ -526,6 +526,90 @@ namespace Tar1.Models.DAL
                 }
             }
         }
+
+        public List<Episode> GetEpisodesList()
+        {
+            SqlConnection con = null;
+            List<Episode> episodesList = new List<Episode>();
+            IDictionary<int, int> likesDict = countLikes();
+            
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Episodes_2021";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    Episode ep = new Episode();
+
+                    ep.EpisodeName = (string)dr["name"];
+                    ep.EpisodeId = (int)dr["episode_id"];
+                    ep.Overview = (string)dr["overview"];
+                    ep.Poster = (string)dr["poster_path"];
+                    ep.SeasonNum = (int)dr["season"]; ;
+                    ep.TvShowId = (int)dr["show_id"]; ;
+                    ep.AirDate = (string)dr["air_date"];
+                    ep.TvShowname = (string)dr["tvShowname"];
+                    ep.Likes = likesDict[ep.EpisodeId];
+                    episodesList.Add(ep);
+                }
+                return episodesList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+        }
+
+        //end episode gets
+
+        //count the likes per episode
+        public IDictionary<int, int> countLikes()
+        {
+            SqlConnection con = null;
+            IDictionary<int, int> likesDict = new Dictionary<int, int>();
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT  episode_id,COUNT(*) as 'sum' FROM  Favorites_2021 GROUP BY  episode_id";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    likesDict.Add((int)dr["episode_id"], (int)dr["sum"]);
+
+                }
+                return likesDict;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+        //
+
 
         public List<Actor> GetActors(int id)
         {

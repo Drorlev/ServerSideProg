@@ -98,7 +98,7 @@
             });
             //ajaxCall For rendering the data
             ajaxCall("GET", "../api/Users", "", getUserSuccess, error);
-           //ajaxCall("GET", "../api/Episodes", "", getEpiSuccess, error);
+           ajaxCall("GET", "../api/Episodes", "", getEpiSuccess, error);
            // ajaxCall("GET", "../api/Series", "", getShowSuccess, error);
          
         });
@@ -148,7 +148,7 @@
                         { data: "Poster" },
                         { data: "Overview" },
                         { data: "AirDate" },
-                        { data: "likes" },
+                        { data: "Likes" },
                        
                     ],
                 });
@@ -173,7 +173,7 @@
                         { data: "Overview" },
                         { data: "Popularity" },
                         { data: "PosterPath" },
-                        { data: "likes" },
+                        { data: "Likes" },
 
                     ],
                 });
@@ -205,7 +205,7 @@
     </div>
 
     <div class="container">
-        <table id="userTable" class="display nowrap" style="width:80%">
+        <table id="userTable" class="display nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -224,7 +224,7 @@
         </table>
 
        
-        <table id="episodeTable" class="display nowrap" style="width:80%">
+        <table id="episodeTable" class="display nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Episode Name</th>
@@ -235,12 +235,12 @@
                     <th>Poster</th>
                     <th>Overview</th>
                     <th>AirDate</th>
-                    <th>Favorites</th>
+                    <th>Likes</th>
                 </tr>
             </thead>
         </table>
 
-        <table id="showsTable" class="display nowrap" style="width:80%">
+        <table id="showsTable" class="display nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Tv Show Id</th>

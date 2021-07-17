@@ -76,6 +76,12 @@ namespace Tar1.Models
         //    this.overview = null;
         //    this.airDate = null;
         //}
+        public List<Episode> Get()
+        {
+            DataServices ds = new DataServices();
+            List<Episode> eList = ds.GetEpisodesList();
+            return eList;
+        }
         public List<Episode> Get(int id)
         {
             DataServices ds = new DataServices();

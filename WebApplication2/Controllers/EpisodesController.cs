@@ -10,7 +10,12 @@ namespace Tar1.Controllers
 {
     public class EpisodesController : ApiController
     {
-        
+        public IEnumerable<Episode> Get()
+        {
+            Episode ep = new Episode();
+            List<Episode> eList = ep.Get();
+            return eList;
+        }
         public IEnumerable<Episode> Get(int id)
         {
             Episode ep = new Episode();
