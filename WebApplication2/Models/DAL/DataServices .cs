@@ -452,8 +452,8 @@ namespace Tar1.Models.DAL
                     ep.EpisodeId =(int)dr["episode_id"];
                     ep.Overview= (string)dr["overview"]; 
                     ep.Poster= (string)dr["poster_path"]; 
-                    ep.SeasonNum = (int)dr["season"]; ;
-                    ep.TvShowId = (int)dr["show_id"]; ;
+                    ep.SeasonNum = (int)dr["season"]; 
+                    ep.TvShowId = (int)dr["show_id"]; 
                     ep.AirDate = (string)dr["air_date"]; 
                     ep.TvShowname= (string)dr["tvShowname"];
                     episodesList.Add(ep);
@@ -505,8 +505,8 @@ namespace Tar1.Models.DAL
                     ep.EpisodeId = (int)dr["episode_id"];
                     ep.Overview = (string)dr["overview"];
                     ep.Poster = (string)dr["poster_path"];
-                    ep.SeasonNum = (int)dr["season"]; ;
-                    ep.TvShowId = (int)dr["show_id"]; ;
+                    ep.SeasonNum = (int)dr["season"]; 
+                    ep.TvShowId = (int)dr["show_id"]; 
                     ep.AirDate = (string)dr["air_date"];
                     ep.TvShowname = (string)dr["tvShowname"];
                     episodesList.Add(ep);
@@ -549,8 +549,8 @@ namespace Tar1.Models.DAL
                     ep.EpisodeId = (int)dr["episode_id"];
                     ep.Overview = (string)dr["overview"];
                     ep.Poster = (string)dr["poster_path"];
-                    ep.SeasonNum = (int)dr["season"]; ;
-                    ep.TvShowId = (int)dr["show_id"]; ;
+                    ep.SeasonNum = (int)dr["season"]; 
+                    ep.TvShowId = (int)dr["show_id"]; 
                     ep.AirDate = (string)dr["air_date"];
                     ep.TvShowname = (string)dr["tvShowname"];
                     ep.Likes = likesDict[ep.EpisodeId];
@@ -610,7 +610,88 @@ namespace Tar1.Models.DAL
         }
         //
 
+        //count series likes
+        public IDictionary<int, int> countSeriesLikes()
+        {
+            SqlConnection con = null;
+            IDictionary<int, int> likesDict = new Dictionary<int, int>();
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
+                String selectSTR = "SELECT  show_id,COUNT(*) as 'sum' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id=epi.episode_id  GROUP BY  show_id";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    likesDict.Add((int)dr["show_id"], (int)dr["sum"]);
+
+                }
+                return likesDict;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+        //
+
+        //GetSeriesList
+        public List<Series> GetSeriesList()
+        {
+            SqlConnection con = null;
+            List<Series> seriesList = new List<Series>();
+            IDictionary<int, int> likesDict = countSeriesLikes();
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Series_2021";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    Series ser = new Series();
+
+                    ser.Name = (string)dr["name"];
+                    ser.Id = (int)dr["id"];
+                    ser.AirDate = (string)dr["air_date"];
+                    ser.OriginCountry = (string)dr["origin_country"];
+                    ser.OriginalLanguage = (string)dr["original_language"];
+                    ser.Overview = (string)dr["overview"];
+                    ser.Popularity = (float)Convert.ToDouble(dr["popularity"]);
+                    ser.PosterPath = (string)dr["poster_path"];
+                    ser.Likes = likesDict[ser.Id];
+                    seriesList.Add(ser);
+                }
+                return seriesList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+        }
+        //end Series get
         public List<Actor> GetActors(int id)
         {
             SqlConnection con = null;

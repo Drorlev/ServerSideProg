@@ -11,9 +11,11 @@ namespace WebApplication2.Controllers
     public class SeriesController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public IEnumerable<Series> Get()
         {
-            return new string[] { "value1", "value2" };
+            Series ser = new Series();
+            List<Series> sList = ser.Get();
+            return sList;
         }
 
         // GET api/<controller>/5

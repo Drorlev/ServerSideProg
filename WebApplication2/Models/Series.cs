@@ -50,5 +50,14 @@ namespace WebApplication2.Models
         public float Popularity { get => popularity; set => popularity = value; }
         public string PosterPath { get => posterPath; set => posterPath = value; }
         public int Likes { get => likes; set => likes = value; }
+
+        public List<Series> Get()
+        {
+            DataServices ds = new DataServices();
+            List<Series> sList = ds.GetSeriesList();
+            return sList;
+        }
     }
+
+   
 }
