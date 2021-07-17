@@ -475,6 +475,64 @@ namespace Tar1.Models.DAL
             }
         }
 
+        public List<Actor> GetActors(int id)
+        {
+            SqlConnection con = null;
+            List<Actor> actorsList = new List<Actor>();
+            //List<Episode> eListNoDuplicates = new List<Episode>();
+            //Dictionary<string, string> eps = new Dictionary<string, string>();
+            //start
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM FavoritesActors_2021 as fav inner join Actors_2021 as actr on fav.actor_id=actr.id Where fav.user_id =" + id;
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    Actor actr = new Actor();
+
+                    
+                    
+                    actr.Name = (string)dr["name"];
+                    actr.Known_for_department = (string)dr["known_for_department"];
+                    actr.Birthday = (string)dr["birthday"];
+                    actr.Gender = (string)dr["gender"];
+                    actr.BirthPlace = (string)dr["birth_place"];
+                    actr.Poster_path = (string)dr["poster_path"];
+                    actr.Id = (int)dr["actor_id"];
+
+                    actorsList.Add(actr);
+                }
+
+                //foreach (var ep in episodesList)
+                //{
+                //    if (!eps.ContainsKey(ep.TvShowname))
+                //    {
+                //        eps.Add(ep.TvShowname, ep.TvShowname);
+                //        eListNoDuplicates.Add(ep);
+                //    }
+                //}
+                return actorsList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
 
 
 

@@ -11,16 +11,18 @@ namespace WebApplication2.Controllers
     public class ActorsController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public IEnumerable<Actor> Get(int id)
         {
-            return new string[] { "value1", "value2" };
+            Actor actr = new Actor();
+            List<Actor> aList = actr.Get(id);
+            return aList;
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST api/<controller>
         public int Post([FromBody] Actor actr)

@@ -4,13 +4,23 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-        *{
-            margin:0px;
-            padding:0px;
-        }
-        body {
+        * {
             margin: 0px;
             padding: 0px;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+        }
+        #ph{
+            height:100%;
+            width:100%;
         }
         #ph > img {
             height: 300px;
@@ -55,6 +65,42 @@
         option{
             background-color:white;
         }
+        #TVph, #actor {
+            height: 33.3%;
+            width: 100%;
+            background-color: dimgrey;
+            color: white;
+            border:1px groove black;
+        }
+
+        #PosterPh, #actorPhoto {
+            height: 100%;
+            width: 25%;
+            float: left;
+        }
+
+        #dataPh, #actorData {
+            width: 75%;
+            float: left;
+            height: 100%;
+        }
+
+        #PosterPh > img {
+            height: 100%;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            border: 1px solid groove;
+        }
+        .overwiew {
+            height: 80%;
+            width: 100%;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -75,8 +121,10 @@
                 window.location = "insert.html"
             });
             $("#episodesList").change(getTVshowEpisodes);
+            $("#actors").click(showActors);
         });
 
+        //do the ajaxCall for the tv show episodes rendering
         function getTVshowEpisodes() {
             let tvShowFilter = $("#episodesList").val();
             let api = "../api/Episodes?tvShowName=" + tvShowFilter + "&id=" + JSON.parse(localStorage.getItem('user')).Id;
@@ -119,6 +167,46 @@
         function getEpisodeErrorCB(err) {
             console.log(err)
         }
+
+        function showActors() {
+            alert("show actors");
+            if (localStorage.user == null)
+                return;
+            let api = "../api/Actors?id=" + JSON.parse(localStorage.getItem('user')).Id;
+            ajaxCall("GET", api, "", getActorsSuccessCB, getActorsErrorCB)
+        }
+
+        function getActorsSuccessCB(actors) {
+            console.log(actors)
+            let strActor = "";
+            for (var i in actors) {
+                strActor += '<div id="TVph">';
+                strActor += '<div id="PosterPh"><img src="' + actors[i].Poster_path + '"/></div>';
+                strActor += '<div id ="dataPh">';
+                strActor += '<div class="rating"></div>';
+                strActor += '<div class="overwiew">';
+                
+                ///
+                strActor += "<p>Name: " + actors[i].Name + "</p>";
+                strActor += "<p>Department: " + actors[i].Known_for_department + "</p>";
+                strActor += "<p>Birthday: " + actors[i].birthday + "</p>";
+                 strActor += "<p>Gender: " + actors[i].Gender + "</p>";
+                 strActor += "<p>Birth Place: " + actors[i].BirthPlace + "</p>";
+                ///
+                
+                strActor += '</div>';
+                strActor += '<div class="origin"></div>';
+                strActor += '</div></div>';  
+            }
+           
+            
+            $("#ph").html(strActor);
+            
+        }
+
+        function getActorsErrorCB(err) {
+            console.log(err)
+        }
     </script>
 </head>
 <body>
@@ -128,12 +216,14 @@
             <select id="episodesList">
                 <option value="-1">select a TV show</option>
             </select>
+            <button id="actors">Favorite Actors</button>
             <button id="index">insert Page</button>
         </div>
     </div>
 
+    
     <div id="ph">
-
+        
 
     </div>
 </body>
