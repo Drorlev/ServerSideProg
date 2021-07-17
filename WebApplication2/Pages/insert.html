@@ -525,19 +525,34 @@
 
         function getActorsArrSuccessCB(Actors) {
          
-                let actorId = Actors.results[0].id;
-            
-            let apiCall = "https://api.themoviedb.org/3/person/" + actorId+"?api_key=" + key + "&language=en-US";
-            ajaxCall("GET", apiCall, "", getSelectActorSuccessCB, getSelectActorErrorCB)
+            let actorId = Actors.results[0].id;
             //ajaxCall to get peopleImg done before
-
-           
+            let apiCall = "https://api.themoviedb.org/3/person/" + actorId + "/images?api_key=" + key + "&language=en-US";
+            ajaxCall("GET", apiCall, "", getImageActorSuccessCB, getImageActorErrorCB)
             
+                
         }
         function getActorsArrErrorCB(err) {
             console.log(err);
             
         }
+        function getImageActorSuccessCB(person) {
+            actorPoster = "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg";
+            if (person.profiles[0] != null) {
+                actorPoster = imagePath + person.profiles[0].file_path;
+            } 
+            
+           
+            strTv = "<img src='" + actorPoster + "'/>";
+            $("#PosterPh").html(strTv);
+            strTv = "";
+            let apiCall = "https://api.themoviedb.org/3/person/" + person.id + "?api_key=" + key + "&language=en-US";
+            ajaxCall("GET", apiCall, "", getSelectActorSuccessCB, getSelectActorErrorCB)
+        }
+        function getImageActorErrorCB(err) {
+            console.log(err)
+        }
+
         //SelectActor
         function getSelectActorSuccessCB(actor) {
             strPeople = "";
@@ -572,17 +587,18 @@
         function addActor() {
             alert("add");
             actor = SelectActor;
-            // from image api actorPoster;
-           /* if (actorPoster == null) {*/
-                actorPoster = "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg";
-            /*}*/
+            let name = (actor.name ? actor.name : 'Non');
+            let KnownForDep = (actor.known_for_department ? actor.known_for_department : 'Non');
+            let birthday = (actor.birthday ? actor.birthday : 'Non');
+            let birthPlace = (actor.birthday ? actor.place_of_birth : 'Non');
+
             let api = "../api/Actors"
              UploadActor = {
-                Name: actor.name,
-                Known_for_department: actor.known_for_department,
-                Birthday: actor.birthday,
+                 Name: name,
+                 Known_for_department: KnownForDep,
+                 Birthday: birthday,
                 Gender: aGender,
-                 BirthPlace: actor.place_of_birth,
+                 BirthPlace: birthPlace,
                  Poster_path: actorPoster,
                 Id: actor.id
             }
@@ -590,7 +606,7 @@
         }
 
         function postActorSuccessCB(inserted) {
-            alert("inserted " + inserted);
+            //alert("inserted " + inserted);
             
             if (localStorage.user) {
                 let api = "../api/Actors?id=" + JSON.parse(localStorage.getItem('user')).Id;
