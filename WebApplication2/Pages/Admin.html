@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <title></title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+    <style type="text/css">
+
+        button {
+            margin-left: 10px;
+        }
+
+        .colorDiv {
+            height: 30px;
+            width: 70px;
+            border: 2px solid black
+        }
+
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+        #container{
+            width:100%;
+        }
+       
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        .tab p {
+            background-color: inherit;
+            float: right;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+    </style>
+
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+
+    <script>
+
+        // will run when the document is ready
+        $(document).ready(function () {
+
+            $("#index").click(function  (){
+                window.location = "insert.html"
+                localStorage.clear();
+            });
+            //ajaxCall For rendering the data
+            ajaxCall("GET", "../api/Users", "", getUserSuccess, error);
+            ajaxCall("GET", "../api/Episodes", "", getEpiSuccess, error);
+            ajaxCall("GET", "../api/Series", "", getShowSuccess, error);
+         
+        });
+
+        //Callbacks
+        function getUserSuccess(usersData)
+        {
+            users = usersData;
+            try {
+                tbl = $('#userTable').DataTable({
+                    data: users,
+                    pageLength: 5,
+                    columns: [
+                       
+                        { data: "Id" },
+                        { data: "Name" },
+                        { data: "LastName" },
+                        { data: "Mail" },
+                        { data: "Password" },
+                        { data: "PhoneNum" },
+                        { data: "Gender" },
+                        { data: "BirthY" },
+                        { data: "Genre" },
+                        { data: "Address" },
+                        
+                    ],
+                });
+
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+        function getEpiSuccess(episodesData) {
+            episodes = episodesData;
+            try {
+                tbl = $('#episodeTable').DataTable({
+                    data: episodes,
+                    pageLength: 5,
+                    columns: [
+                        { data: "EpisodeName" },
+                        { data: "EpisodeId" },
+                        { data: "TvShowname" },
+                        { data: "TvShowId" },
+                        { data: "SeasonNum" },
+                        { data: "Poster" },
+                        { data: "Overview" },
+                        { data: "AirDate" },
+                        /*{ data: "Favorites" },*/
+                       
+                    ],
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+        function getShowSuccess(showsData) {
+            shows = showsData;
+            try {
+                tbl = $('#showsTable').DataTable({
+                    data: shows,
+                    pageLength: 5,
+                    columns: [
+
+                        { data: "Id" },
+                        { data: "Name" },
+                        { data: "AirDate" },
+                        { data: "OriginCountry" },
+                        { data: "OriginalLanguage" },
+                        { data: "Overview" },
+                        { data: "Popularity" },
+                        { data: "PosterPath" },
+                       /* { data: "Favorites" },*/
+
+                    ],
+                });
+
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+        //end Callbacks
+
+
+        // this function is activated in case of a failure
+        function error(err) {
+            swal("Error: " + err);
+        }
+
+    </script>
+
+</head>
+<body>
+    <div id="container">
+
+        <div class="tab">
+            <button id="index">Logout</button>
+
+            <p class="logIn">Hello Admin</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <table id="userTable" class="display nowrap" style="width:80%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>LastName</th>
+                    <th>Mail</th>
+                    <th>Password</th>
+                    <th>PhoneNum</th>
+                    <th>Gender</th>
+                    <th>BirthY</th>
+                    <th>Genre</th>
+                    <th>Address</th>
+                    
+                </tr>
+            </thead>
+        </table>
+
+       
+        <table id="episodeTable" class="display nowrap" style="width:80%">
+            <thead>
+                <tr>
+                    <th>Episode Name</th>
+                    <th>Episode Id</th>
+                    <th>TvShowname</th>
+                    <th>Tv Show Id</th>
+                    <th>Season Number</th>
+                    <th>Poster</th>
+                    <th>Overview</th>
+                    <th>AirDate</th>
+                    <th>Favorites</th>
+                </tr>
+            </thead>
+        </table>
+
+        <table id="showsTable" class="display nowrap" style="width:80%">
+            <thead>
+                <tr>
+                    <th>Tv Show Id</th>
+                    <th>Tv Show name</th>
+                    <th>AirDate</th>
+                    <th>Origin Country</th>
+                    <th>Original Language</th>
+                    <th>Overview</th>
+                    <th>Popularity</th>
+                    <th>Poster</th>
+                    <th>Favorites</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+   
+</body>
+</html>
