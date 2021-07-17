@@ -11,12 +11,14 @@ namespace WebApplication2.Controllers
     public class UsersController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
+        public IEnumerable<User> Get()
         {
-            return new string[] { "value1", "value2" };
+            User usr = new User();
+            List<User> uList = usr.Get();
+            return uList;
         }
 
-        
+
         public HttpResponseMessage Get(string email, string password)
         {
             User usr = new User();

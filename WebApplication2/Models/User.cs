@@ -44,6 +44,13 @@ namespace WebApplication2.Models
         
         }
 
+        public List<User> Get()
+        {
+            DataServices ds = new DataServices();
+            List<User> uList = ds.GetUsers();
+            return uList;
+        }
+
         public User Get(string email, string password)
         {
             DataServices ds = new DataServices();

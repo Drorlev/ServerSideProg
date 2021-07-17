@@ -16,6 +16,7 @@ namespace Tar1.Models
         string overview;
         string airDate;
         string tvShowname;
+        int likes;
 
         public Episode(int tvShowId, int seasonNum, int episodeId, string episodeName, string poster, string overview, string airDate, string tvShowname)
         {
@@ -52,6 +53,7 @@ namespace Tar1.Models
         public string Overview { get => overview; set => overview = value; }
         public string AirDate { get => airDate; set => airDate = value; }
         public string TvShowname { get => tvShowname; set => tvShowname = value; }
+        public int Likes { get => likes; set => likes = value; }
 
 
 

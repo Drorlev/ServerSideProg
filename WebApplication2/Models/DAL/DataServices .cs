@@ -325,7 +325,7 @@ namespace Tar1.Models.DAL
             return cmd;
         }
 
-        //get
+        //get(string email,string pass)
         public User Get(string email,string pass)
         {
 
@@ -358,6 +358,58 @@ namespace Tar1.Models.DAL
                 }
 
                 return usr;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+
+        }
+
+        //GetUsers()
+        public List<User> GetUsers()
+        {
+
+            SqlConnection con = null;
+            List<User> userL = new List<User>();
+           
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Users_2021";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    User usr = new User();
+                    usr.Name = (string)dr["name"];
+                    usr.LastName = (string)dr["last_name"];
+                    usr.Mail = (string)dr["mail"];
+                    usr.Password = (string)dr["password"];
+                    usr.PhoneNum = (string)dr["phoneNum"];
+                    usr.Gender = (string)dr["gender"];
+                    usr.BirthY = Convert.ToInt32(dr["birth_Day"]);
+                    usr.Address = (string)dr["address"];
+                    usr.Genre = (string)dr["genre"];
+                    usr.Id = Convert.ToInt32(dr["id"]);
+                    userL.Add(usr);
+                }
+
+                return userL;
             }
             catch (Exception ex)
             {

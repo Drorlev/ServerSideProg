@@ -98,8 +98,8 @@
             });
             //ajaxCall For rendering the data
             ajaxCall("GET", "../api/Users", "", getUserSuccess, error);
-            ajaxCall("GET", "../api/Episodes", "", getEpiSuccess, error);
-            ajaxCall("GET", "../api/Series", "", getShowSuccess, error);
+           //ajaxCall("GET", "../api/Episodes", "", getEpiSuccess, error);
+           // ajaxCall("GET", "../api/Series", "", getShowSuccess, error);
          
         });
 
@@ -148,7 +148,7 @@
                         { data: "Poster" },
                         { data: "Overview" },
                         { data: "AirDate" },
-                        /*{ data: "Favorites" },*/
+                        { data: "likes" },
                        
                     ],
                 });
@@ -173,7 +173,7 @@
                         { data: "Overview" },
                         { data: "Popularity" },
                         { data: "PosterPath" },
-                       /* { data: "Favorites" },*/
+                        { data: "likes" },
 
                     ],
                 });

@@ -51,6 +51,7 @@ namespace WebApplication2.Models
             DataServices dbs = new DataServices();
             dbs.Insert(this, id);
         }
+       
 
         public List<Actor> Get(int id)
         {

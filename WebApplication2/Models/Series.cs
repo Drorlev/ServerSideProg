@@ -16,6 +16,7 @@ namespace WebApplication2.Models
         string overview;
         float popularity;
         string posterPath;
+        int likes;
 
         public Series(int id, string name, string airDate, string originCountry, string originalLanguage, string overview, float popularity, string posterPath)
         {
@@ -48,5 +49,6 @@ namespace WebApplication2.Models
         public string Overview { get => overview; set => overview = value; }
         public float Popularity { get => popularity; set => popularity = value; }
         public string PosterPath { get => posterPath; set => posterPath = value; }
+        public int Likes { get => likes; set => likes = value; }
     }
 }
