@@ -587,10 +587,21 @@
         function addActor() {
             alert("add");
             actor = SelectActor;
-            let name = (actor.name ? actor.name : 'Non');
-            let KnownForDep = (actor.known_for_department ? actor.known_for_department : 'Non');
-            let birthday = (actor.birthday ? actor.birthday : 'Non');
-            let birthPlace = (actor.birthday ? actor.place_of_birth : 'Non');
+            let name = actor.name;
+            let KnownForDep = 'Non';
+            if (actor.known_for_department != null) {
+                KnownForDep = actor.known_for_department;
+            }
+            let birthday = 'Non';
+            if (actor.birthday != null) {
+                birthday = actor.birthday;
+            }
+              
+            let birthPlace = 'Non';
+            if (actor.place_of_birth != null) {
+                birthPlace = actor.place_of_birth;
+            }
+            
 
             let api = "../api/Actors"
              UploadActor = {

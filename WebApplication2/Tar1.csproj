@@ -186,6 +186,7 @@
     <Content Include="Pages\signIn.html" />
     <Content Include="Pages\view.html" />
     <Content Include="Scripts\ajaxCalls.js" />
+    <Content Include="Scripts\ajaxCallsStub.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
