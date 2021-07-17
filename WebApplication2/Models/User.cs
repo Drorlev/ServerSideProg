@@ -18,6 +18,7 @@ namespace WebApplication2.Models
         string genre;
         string address;
         int id;
+        bool isAdmin;
 
         public User(string name, string lastName, string mail, string password, string phoneNum, string gender, int birthY, string genre, string address, int id)
         {
@@ -68,5 +69,6 @@ namespace WebApplication2.Models
         public string Genre { get => genre; set => genre = value; }
         public string Address { get => address; set => address = value; }
         public int Id { get => id; set => id = value; }
+        public bool IsAdmin { get => isAdmin; set => isAdmin = value; }
     }
 }

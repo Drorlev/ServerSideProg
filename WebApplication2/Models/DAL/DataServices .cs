@@ -355,6 +355,10 @@ namespace Tar1.Models.DAL
                     usr.Address= (string)dr["address"];
                     usr.Genre= (string)dr["genre"];
                     usr.Id = Convert.ToInt32(dr["id"]);
+                    if (usr.Mail == "Admin@Admin.net")
+                    {
+                        usr.IsAdmin = true;
+                    }
                 }
 
                 return usr;

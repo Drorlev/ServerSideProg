@@ -84,13 +84,15 @@
         function SuccessCB(user) {
             console.log(user);
             let usr = user;
-            let nowUser = new User(usr.Name, usr.LastName, usr.Mail, usr.PhoneNum, usr.Gender, usr.BirthY, usr.Genre, usr.Address, usr.Id)//add user.admin
+            let nowUser = new User(usr.Name, usr.LastName, usr.Mail, usr.PhoneNum, usr.Gender, usr.BirthY, usr.Genre, usr.Address, usr.Id)
             localStorage.setItem("user", JSON.stringify(nowUser));
-           // if (user.admin != true) {
+            if (user.IsAdmin == true) {
+                window.location = "Admin.html"
+            } else {
                 window.location = "insert.html"
-            //}
-            //showTables();//add function that show everything
-            //add tab to return to home
+            }
+            
+            
         }
 
         function ErrorCB(err) {
