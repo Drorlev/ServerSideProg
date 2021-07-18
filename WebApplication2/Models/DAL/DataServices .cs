@@ -701,16 +701,22 @@ namespace Tar1.Models.DAL
         //get Recommended Series by choosing series and compare
         //the series to other user that like it 
         //and then choose the top favorite series between the series adn return it
-        public List<int> GetrecommendedSeries(int show_id, int user_id)
+        public List<string> GetrecommendedSeries(int show_id, int user_id)
         {
             SqlConnection con = null;
             List<int> idList = similarUsers(show_id, user_id);
-            List<int> seriesIdList = new List<int>();
+            List<string> seriesIdList = new List<string>();
             try
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT   show_id, COUNT(*) as 'num' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id = epi.episode_id  and(";
+                
+                String selectSTR = "SELECT   tvShowname, COUNT(*) as 'num' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id = epi.episode_id  and(";
+                if (idList.Count == 0)
+                {
+                    seriesIdList.Add("There are no recommended Tv show by this pick");
+                    return seriesIdList;
+                }
                 foreach (var id in idList)
                 {
                     if (idList.Count - 1 == idList.IndexOf(id))
@@ -722,14 +728,15 @@ namespace Tar1.Models.DAL
                         selectSTR += " user_id=" + id+" or ";
                     }
                 }
-                selectSTR += ") and show_id !="+ show_id + " GROUP BY  show_id ORDER BY COUNT(*) Desc; ";
+                selectSTR += ") and show_id !="+ show_id + " GROUP BY  tvShowname ORDER BY COUNT(*) Desc; ";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 // get a reader
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
                 while (dr.Read())
                 {   // Read till the end of the data into a row
-                    int serID= (int)dr["show_id"];
-                    seriesIdList.Add(serID);
+                    //int serID= (int)dr["show_id"];
+                    string serName = (string)dr["tvShowname"];
+                    seriesIdList.Add(serName);
 
 
                     

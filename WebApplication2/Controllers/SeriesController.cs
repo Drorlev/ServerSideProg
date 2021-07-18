@@ -17,10 +17,10 @@ namespace WebApplication2.Controllers
             List<Series> sList = ser.Get();
             return sList;
         }
-        public IEnumerable<int> Getrecommended(int show_id,int user_id)
+        public IEnumerable<string> Getrecommended(int show_id,int user_id)
         {
             Series ser = new Series();
-            List<int> sList = ser.Getrecommended( show_id,  user_id);
+            List<string> sList = ser.Getrecommended( show_id,  user_id);
             return sList;
         }
         // GET api/<controller>/5

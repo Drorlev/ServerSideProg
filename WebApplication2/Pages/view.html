@@ -131,13 +131,20 @@
             if (tvShowName == "select a TV show")
                 return;
             let tvShowId = episodesDict[tvShowName];
-            alert(tvShowId);
+            //alert(tvShowId);
             let api = "../api/Series?show_id=" + tvShowId + "&user_id=" + userId;
             ajaxCall("GET", api, "", getrecommendedSuccessCB, getrecommendedErrorCB)
         }
 
         function getrecommendedSuccessCB(tvShows) {
-            console.log(tvShows)}
+            console.log(tvShows)
+            let str = "<h1>The Recommended Tv Show by Descending Order:</h1>";
+            for (var i in tvShows) {
+               
+                str += "<h4>" + tvShows[i] + "</h4>";
+            }
+            $("#ph").html(str);
+        }
         function getrecommendedErrorCB(err) {
             console.log(err)
         }
@@ -189,7 +196,7 @@
         }
 
         function showActors() {
-            alert("show actors");
+           // alert("show actors");
             if (localStorage.user == null)
                 return;
             let api = "../api/Actors?id=" + JSON.parse(localStorage.getItem('user')).Id;
@@ -241,7 +248,7 @@
             <button id="recommended">Recommendation</button>
         </div>
     </div>
-
+    
     
     <div id="ph">
         

@@ -59,10 +59,10 @@ namespace WebApplication2.Models
         }
         
 
-        public List<int> Getrecommended(int show_id, int user_id)
+        public List<string> Getrecommended(int show_id, int user_id)
         {
         DataServices ds = new DataServices();
-        List<int> sList = ds.GetrecommendedSeries(show_id, user_id);
+        List<string> sList = ds.GetrecommendedSeries(show_id, user_id);
         return sList;
         }
     }
