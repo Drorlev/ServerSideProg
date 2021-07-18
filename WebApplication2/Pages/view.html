@@ -132,6 +132,14 @@
                 return;
             let tvShowId = episodesDict[tvShowName];
             alert(tvShowId);
+            let api = "../api/Series?show_id=" + tvShowId + "&user_id=" + userId;
+            ajaxCall("GET", api, "", getrecommendedSuccessCB, getrecommendedErrorCB)
+        }
+
+        function getrecommendedSuccessCB(tvShows) {
+            console.log(tvShows)}
+        function getrecommendedErrorCB(err) {
+            console.log(err)
         }
 
         //do the ajaxCall for the tv show episodes rendering
