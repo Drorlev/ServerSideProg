@@ -55,27 +55,6 @@ namespace Tar1.Models
         public string TvShowname { get => tvShowname; set => tvShowname = value; }
         public int Likes { get => likes; set => likes = value; }
 
-
-
-
-        //public Episode(string tvShowName, int seasonNum, string episodeName, string poster, string overview, string airDate)
-        //{
-        //    this.tvShowName = tvShowName;
-        //    this.seasonNum = seasonNum;
-        //    this.episodeName = episodeName;
-        //    this.poster = poster;
-        //    this.overview = overview;
-        //    this.airDate = airDate;
-        //}
-        //public Episode()
-        //{
-        //    this.tvShowName = null;
-        //    this.seasonNum = 0;
-        //    this.episodeName = null;
-        //    this.poster = null;
-        //    this.overview = null;
-        //    this.airDate = null;
-        //}
         public List<Episode> Get()
         {
             DataServices ds = new DataServices();
@@ -94,17 +73,6 @@ namespace Tar1.Models
             List<Episode> eList = ds.Get(tvShowName,id);
             return eList;
         }
-        //public int Insert() {
-        //    DataServices dbs = new DataServices();
-        //    dbs.Insert(this);
-        //    return 1;
-        //}
-
-        //public string TvShowName { get => tvShowName; set => tvShowName = value; }
-        //public int SeasonNum { get => seasonNum; set => seasonNum = value; }
-        //public string EpisodeName { get => episodeName; set => episodeName = value; }
-        //public string Poster { get => poster; set => poster = value; }
-        //public string Overview { get => overview; set => overview = value; }
-        //public string AirDate { get => airDate; set => airDate = value; }
+       
     }
 }

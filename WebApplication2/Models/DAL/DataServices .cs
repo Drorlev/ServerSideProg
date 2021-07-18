@@ -623,7 +623,7 @@ namespace Tar1.Models.DAL
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT  show_id,COUNT(DISTINCT user_id) as 'num' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id=epi.episode_id  GROUP BY  show_id";
+                String selectSTR = "SELECT  show_id,COUNT(DISTINCT user_id) as 'sum' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id=epi.episode_id  GROUP BY  show_id";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 // get a reader
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -831,14 +831,7 @@ namespace Tar1.Models.DAL
                     actorsList.Add(actr);
                 }
 
-                //foreach (var ep in episodesList)
-                //{
-                //    if (!eps.ContainsKey(ep.TvShowname))
-                //    {
-                //        eps.Add(ep.TvShowname, ep.TvShowname);
-                //        eListNoDuplicates.Add(ep);
-                //    }
-                //}
+              
                 return actorsList;
             }
             catch (Exception ex)
@@ -854,67 +847,6 @@ namespace Tar1.Models.DAL
                 }
             }
         }
-
-
-
-
-        //static List<Episode> episodesList;
-        //static List<User> userList;
-
-        //public int Insert(Episode episode)
-        //{
-        //    if (episodesList == null)
-        //    {
-        //        episodesList = new List<Episode>();
-        //    }
-        //    episodesList.Add(episode);
-
-        //    return 1;
-        //}
-        //public int Insert(User user)
-        //{
-        //    if (userList == null)
-        //    {
-        //        userList = new List<User>();
-        //    }
-        //    userList.Add(user);
-
-        //    return 1;
-        //}
-
-        //public List<Episode> Get()
-        //{
-        //    return episodesList;
-        //}
-        //public List<Episode> Get(string tvShowName)
-        //{
-        //    List<Episode> filteredList = new List<Episode>();
-        //    foreach (Episode ep in episodesList)
-        //    {
-        //        if (ep.TvShowName == tvShowName)
-        //            filteredList.Add(ep);
-        //    }
-        //    return filteredList;
-        //}
-        //public User Get(string email,string password)
-        //{
-        //    //try
-        //    //userList = new List<User>();
-
-        //    //User user3 = new User("Israel", "Israeli", "1234@gmail.com", "123456D", "050-222-2222", "Male", 1997, "", "aaa north 12");
-        //    //userList.Add(user3);
-        //    //
-        //    if (userList == null)
-        //    {
-        //        return null;
-        //    }
-        //   //User user = new User();
-        //    foreach (User usr in userList)
-        //    {
-        //        if (usr.Mail == email && usr.Password == password)
-        //            return usr;
-        //    }
-        //    return null;
-        //}
+        
     }
 }

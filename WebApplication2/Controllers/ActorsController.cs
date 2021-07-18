@@ -18,13 +18,7 @@ namespace WebApplication2.Controllers
             return aList;
         }
 
-        // GET api/<controller>/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // POST api/<controller>
+       
         public int Post([FromBody] Actor actr)
         {
             string name = actr.Name;
