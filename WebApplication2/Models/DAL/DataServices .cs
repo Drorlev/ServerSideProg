@@ -696,6 +696,56 @@ namespace Tar1.Models.DAL
             }
         }
         //end Series get
+
+
+        //get Recommended Series by choosing series and compare
+        //the series to other user that like it 
+        //and then choose the top favorite series between the series adn return it
+        public List<Series> GetrecommendedSeries()
+        {
+            SqlConnection con = null;
+            List<Series> seriesList = new List<Series>();
+            IDictionary<int, int> likesDict = countSeriesLikes();
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Series_2021";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    Series ser = new Series();
+
+                    ser.Name = (string)dr["name"];
+                    ser.Id = (int)dr["id"];
+                    ser.AirDate = (string)dr["air_date"];
+                    ser.OriginCountry = (string)dr["origin_country"];
+                    ser.OriginalLanguage = (string)dr["original_language"];
+                    ser.Overview = (string)dr["overview"];
+                    ser.Popularity = (float)Convert.ToDouble(dr["popularity"]);
+                    ser.PosterPath = (string)dr["poster_path"];
+                    ser.Likes = likesDict[ser.Id];
+                    seriesList.Add(ser);
+                }
+                return seriesList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+        }
         public List<Actor> GetActors(int id)
         {
             SqlConnection con = null;

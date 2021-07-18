@@ -57,6 +57,14 @@ namespace WebApplication2.Models
             List<Series> sList = ds.GetSeriesList();
             return sList;
         }
+        
+
+        public List<Series> Getrecommended(int show_id, int user_id)
+        {
+        DataServices ds = new DataServices();
+        List<Series> sList = ds.GetrecommendedSeries(show_id, user_id);
+        return sList;
+        }
     }
 
    
