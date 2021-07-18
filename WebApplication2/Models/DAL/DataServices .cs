@@ -623,7 +623,7 @@ namespace Tar1.Models.DAL
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT  show_id,COUNT(*) as 'sum' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id=epi.episode_id  GROUP BY  show_id";
+                String selectSTR = "SELECT  show_id,COUNT(DISTINCT user_id) as 'num' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id=epi.episode_id  GROUP BY  show_id";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 // get a reader
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
@@ -701,36 +701,79 @@ namespace Tar1.Models.DAL
         //get Recommended Series by choosing series and compare
         //the series to other user that like it 
         //and then choose the top favorite series between the series adn return it
-        public List<Series> GetrecommendedSeries()
+        public List<int> GetrecommendedSeries(int show_id, int user_id)
         {
             SqlConnection con = null;
-            List<Series> seriesList = new List<Series>();
-            IDictionary<int, int> likesDict = countSeriesLikes();
-
+            List<int> idList = similarUsers(show_id, user_id);
+            List<int> seriesIdList = new List<int>();
             try
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT * FROM Series_2021";
+                String selectSTR = "SELECT   show_id, COUNT(*) as 'num' FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id = epi.episode_id  and(";
+                foreach (var id in idList)
+                {
+                    if (idList.Count - 1 == idList.IndexOf(id))
+                    {
+                        selectSTR += " user_id=" + id;
+                    }
+                    else
+                    {
+                        selectSTR += " user_id=" + id+" or ";
+                    }
+                }
+                selectSTR += ") and show_id !="+ show_id + " GROUP BY  show_id ORDER BY COUNT(*) Desc; ";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 // get a reader
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
                 while (dr.Read())
                 {   // Read till the end of the data into a row
-                    Series ser = new Series();
+                    int serID= (int)dr["show_id"];
+                    seriesIdList.Add(serID);
 
-                    ser.Name = (string)dr["name"];
-                    ser.Id = (int)dr["id"];
-                    ser.AirDate = (string)dr["air_date"];
-                    ser.OriginCountry = (string)dr["origin_country"];
-                    ser.OriginalLanguage = (string)dr["original_language"];
-                    ser.Overview = (string)dr["overview"];
-                    ser.Popularity = (float)Convert.ToDouble(dr["popularity"]);
-                    ser.PosterPath = (string)dr["poster_path"];
-                    ser.Likes = likesDict[ser.Id];
-                    seriesList.Add(ser);
+
+                    
                 }
-                return seriesList;
+                return seriesIdList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+
+          
+        }//end recommand series
+
+        //find similar chosen series
+        public List<int> similarUsers(int show_id, int user_id)
+        {
+            SqlConnection con = null;
+            List<int> userIdList= new List<int>();
+           
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT DISTINCT  user_id FROM Favorites_2021 as fav inner join Episodes_2021 as epi on fav.episode_id=epi.episode_id and show_id="+ show_id + " and user_id!="+ user_id;
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+
+                    int id = (int)dr["user_id"];
+                    userIdList.Add(id);
+                }
+                return userIdList;
             }
             catch (Exception ex)
             {
@@ -746,6 +789,7 @@ namespace Tar1.Models.DAL
 
             }
         }
+        //
         public List<Actor> GetActors(int id)
         {
             SqlConnection con = null;
