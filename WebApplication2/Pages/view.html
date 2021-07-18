@@ -122,7 +122,17 @@
             });
             $("#episodesList").change(getTVshowEpisodes);
             $("#actors").click(showActors);
+            $("#recommended").click(recommended);
         });
+        //recommended series by Desc
+        function recommended() {
+            let userId = JSON.parse(localStorage.getItem('user')).Id;
+            let tvShowName = $("#episodesList").val();
+            if (tvShowName == "select a TV show")
+                return;
+            let tvShowId = episodesDict[tvShowName];
+            alert(tvShowId);
+        }
 
         //do the ajaxCall for the tv show episodes rendering
         function getTVshowEpisodes() {
@@ -135,11 +145,13 @@
         //Make the dropDown
         function getEpisodeSuccessCB(episodes) {
             let episodesArr = [];
+            episodesDict = [];
             let str = "<option>select a TV show</option>";
             for (var k in episodes) {
                 if (episodesArr[episodes[k].TvShowname] == null) {
-                    str += ' <option>' + episodes[k].TvShowname + '</option>';
+                    str += ' <option class="' + episodes[k].TvShowId +'">' + episodes[k].TvShowname + '</option>';
                     episodesArr[episodes[k].TvShowname] = episodes[k].Episodename;
+                    episodesDict[episodes[k].TvShowname] = episodes[k].TvShowId;
                 }
             }
             document.getElementById("episodesList").innerHTML = str;
