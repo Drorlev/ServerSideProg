@@ -1,0 +1,7 @@
+mail	                    password
+Israel@gmail.com	        1234567iI
+David@walla.com	        1234567Y
+hi@gmail.com	        123465G
+anatziony1@gmail.com   anat1234H
+Admin@Admin.net	        Admin123
+134@gmail.com	        123456AAA
